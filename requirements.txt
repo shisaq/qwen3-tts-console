@@ -1,0 +1,6 @@
+# MLX 0.32+ is required: older MLX produces chunks of digital silence on M5-class GPUs, without errors.
+mlx>=0.32.4
+# mlx-audio pinned to a commit known to work with Qwen3-TTS
+mlx-audio @ git+https://github.com/Blaizzy/mlx-audio.git@9349644ccbd62eb10900852228f7b952c566def3
+numpy
+soundfile

@@ -1,0 +1,14 @@
+{
+  "host": "127.0.0.1",
+  "port": 18400,
+  "models_dir": "models",
+  "data_dir": "~/.local/share/ttsd",
+  "preset_model": "Qwen3-TTS-12Hz-1.7B-CustomVoice-8bit",
+  "clone_model": "Qwen3-TTS-12Hz-1.7B-Base-8bit",
+  "ffmpeg": null,
+  "transcribe_python": null,
+  "whisper_model": "base",
+  "idle_unload_minutes": 10,
+  "device_name": "",
+  "home_url": ""
+}

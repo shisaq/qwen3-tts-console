@@ -1,0 +1,257 @@
+'use strict';
+/* UI strings. Each language must be complete: the UI never mixes languages.
+   {name} placeholders are filled by t(key, vars). */
+
+const I18N = {
+  zh: {
+    'h.g': '生成当前段',
+    'brand': 'Qwen3-TTS 调音台',
+    'model': '1.7B 模型 · 本地运行',
+    'led.preset': '预设模型', 'led.presetTip': '系统音色用的模型是否已载入',
+    'led.clone': '克隆模型', 'led.cloneTip': '自定义音色用的模型是否已载入',
+    'led.rec': '生成',
+    'btn.scripts': '稿件', 'btn.new': '新建稿件',
+    'btn.recAll': '生成剩余段落', 'btn.recAllTip': '把还没有版本的段落全部加入队列（A）',
+    'btn.add': '加一段',
+
+    'lcd.noScript': '未打开稿件', 'lcd.renameTip': '点击修改标题',
+    'lcd.track': '段落', 'lcd.done': '已录', 'lcd.voice': '音色',
+    'mode.standby': '待机', 'mode.ready': '就绪', 'mode.loading': '载入中', 'mode.rec': '生成中',
+    'mode.play': '播放中', 'mode.playall': '连播中', 'mode.offline': '离线',
+
+    'lib.title': '音色库', 'lib.hint': '点一下即选用',
+    'lib.system': '系统音色', 'lib.custom': '我的音色',
+    'lib.emptyCustom': '还没有自定义音色。上传一段录音，或在某个版本上点「定为音色」。',
+    'lib.noMatch': '没有符合条件的音色',
+    'f.lang': '语言', 'f.gender': '性别', 'f.all': '全部', 'f.search': '搜索音色',
+    'vl.zh': '中文', 'vl.en': '英语', 'vl.ja': '日语', 'vl.ko': '韩语', 'vl.other': '其他', 'vl.dialect': '方言',
+    'vs.zh': '中', 'vs.en': '英', 'vs.ja': '日', 'vs.ko': '韩', 'vs.other': '其他',
+    'dialect.beijing': '北京话', 'dialect.sichuan': '四川话',
+    'g.f': '女声', 'g.m': '男声', 'gs.f': '女', 'gs.m': '男',
+    'cart.add': '新音色', 'cart.hear': '听参考录音', 'cart.edit': '编辑音色',
+    'src.upload': '上传的录音', 'src.take': '取自《{title}》',
+    'desc.Vivian': '明亮利落的年轻女声', 'desc.Serena': '温柔的年轻女声', 'desc.Uncle_Fu': '低沉醇厚的成熟男声',
+    'desc.Dylan': '京腔青年男声', 'desc.Eric': '川味活泼男声', 'desc.Ryan': '节奏感强的男声',
+    'desc.Aiden': '阳光的美式男声', 'desc.Ono_Anna': '俏皮的日语女声', 'desc.Sohee': '温暖的韩语女声',
+
+    'gen.title': '生成', 'gen.note': '改了要重新生成',
+    'post.title': '后期', 'post.note': '实时生效，不用重新生成',
+    'gen.lang': '语言',
+    'gl.auto': '自动', 'gl.chinese': '中文', 'gl.english': '英语', 'gl.japanese': '日语', 'gl.korean': '韩语',
+    'mood.label': '语气', 'mood.note': '用一句话描述说话的语气',
+    'mood.cloneNote': '自定义音色不支持语气描述，语气由参考录音决定', 'mood.ph': '正常语气',
+    'k.temp': '温度', 'k.tempSub': '稳定 ↔ 多变',
+    'k.speed': '语速', 'k.speedSub': '加快或放慢',
+    'k.gate': '去气口', 'k.gateSub': '静音判定阈值',
+    'k.keep': '停顿', 'k.keepSub': '去气口后保留',
+    'k.gap': '段间隔', 'k.gapSub': '导出时段落之间',
+    'k.off': '关', 'k.sec': '{v} 秒',
+
+    'trk.title': '段落', 'trk.hint': '每段可以生成多个版本，选中的那个进入成片',
+    'trk.ph': '这一段要说的话……', 'trk.noTake': '还没有生成 · 点「生成」',
+    'trk.rec': '生成', 'trk.recTip': '生成这一段（G）。已有版本时再生成一个，旧的会保留',
+    'trk.playTip': '试听选中的版本（空格）',
+    'trk.lock': '定为音色', 'trk.lockTip': '把选中的版本做成自定义音色，用它生成其余段落，全篇音色一致',
+    'trk.delTakeTip': '删除选中的版本', 'trk.delParaTip': '删除这一段',
+    'trk.takes': '{n} 个版本', 'trk.textChanged': '稿子改过了，这个版本是按旧稿生成的',
+    'trk.running': '生成中 {p}%', 'trk.queued': '排队中',
+    'trk.takeTip': '{voice} · 温度 {temp}{mood} · {dur} 秒',
+
+    't.rec': '生成', 't.recTip': '生成当前段（G）', 't.play': '播放', 't.playTip': '播放或暂停当前段（空格）',
+    't.all': '连播', 't.allTip': '从当前段开始连续播放（Shift+空格）', 't.stop': '停止', 't.stopTip': '停止（Esc）',
+    't.export': '导出', 't.exportTip': '导出成片（B）',
+    'h.a': '生成剩余段落', 'h.space': '试听', 'h.arrows': '切换段落', 'h.num': '选择版本', 'h.cmdEnter': '编辑时直接生成',
+    'empty.label': '空白稿件', 'empty.text': '还没有稿件。把稿子粘贴进来，会按空行自动分段。',
+    'colophon': '模型闲置 {m} 分钟后自动卸载', 'home': '返回首页',
+
+    'msg.open': '打开或新建一份稿件开始工作',
+    'msg.loading.preset': '正在载入预设模型……', 'msg.loading.clone': '正在载入克隆模型……',
+    'msg.recording': '正在生成第 {n} 段 · {p}%', 'msg.recOther': '正在生成其他稿件 · {p}%', 'msg.queueRest': ' · 后面还有 {k} 段',
+    'msg.playing': '正在播放第 {n} 段',
+    'msg.allDone': '全部 {n} 段都已生成 · 点「导出」得到成片',
+    'msg.idle': '模型已就绪 · 闲置 {m} 分钟后自动卸载',
+    'msg.pending': '还有 {n} 段没生成 · 选好音色后点「生成」',
+    'msg.queuedMany': '{n} 段已加入队列 · {voice}', 'msg.recStart': '开始生成第 {n} 段 · {voice}', 'msg.firstLoad': ' · 首次需要载入模型',
+    'msg.emptyPara': '这一段还是空的，先写点字', 'msg.allQueued': '未录的段落都已在排队',
+    'msg.nothingPending': '每段都有版本了；要重新生成某段，选中后按 G',
+    'msg.noTake': '这一段还没有生成', 'msg.noTakesAll': '还没有生成任何内容', 'msg.pickPara': '先选中一段',
+    'msg.needScript': '先打开或新建一份稿件',
+    'msg.voiceSet': '已选用 {name}', 'msg.genFailed': '生成失败：{err}', 'msg.saveFailed': '没保存上：{err}',
+    'msg.done': '播放完毕', 'msg.newScript': '稿件已创建，共 {n} 段 · 选好音色后按 A 一次生成',
+    'msg.locked': '已生成音色「{name}」· 按 A 用它生成其余段落', 'msg.voiceAdded': '已添加音色「{name}」',
+    'msg.voiceSaved': '音色已保存', 'msg.offline': '连不上服务',
+
+    'c.delVoice': '删除音色「{name}」？已经录好的段落不受影响。',
+    'c.delTake': '删除第 {n} 段的第 {k} 个版本？', 'c.delPara': '删除第 {n} 段和它的 {k} 个版本？',
+    'c.delScript': '删除「{title}」和它的全部版本？',
+
+    'd.cancel': '取消', 'd.close': '关闭', 'd.delete': '删除',
+    'new.title': '新建稿件', 'new.sub': '粘贴稿件，按空行分段（没有空行时按行分）。也可以把文本文件拖进来。',
+    'new.titlePh': '标题（可不填，默认取第一句）', 'new.textPh': '在这里粘贴稿件……',
+    'new.count': '将分成 {n} 段', 'new.create': '创建',
+    'scripts.title': '稿件', 'scripts.empty': '还没有稿件', 'scripts.meta': '{done}/{n} 段已生成 · {date}',
+
+    'v.newTitle': '新建音色', 'v.lockTitle': '用第 {n} 段的版本生成音色', 'v.editTitle': '编辑音色',
+    'v.sub': '参考录音 5–15 秒、单人、背景安静效果最好。参考文本必须和录音一字不差，音色像不像主要取决于它。',
+    'v.lockSub': '会带上当前的语速和去气口设置。参考文本默认是这一段的稿子，请确认和这个版本一致。',
+    'v.editSub': '修改名称、标注或参考文本。参考录音不能更换，要换请新建一个音色。',
+    'v.drop': '点这里选择音频，或把文件拖进来', 'v.uploading': '正在上传 {name}……',
+    'v.uploaded': '{name} · {d} 秒 · 点这里更换', 'v.tooLong': '（偏长，建议剪到 15 秒内）', 'v.tooShort': '（偏短）',
+    'v.namePh': '音色名称', 'v.unset': '不标注性别', 'v.refText': '参考文本', 'v.textPh': '录音里说的原话',
+    'v.asr': '自动听写', 'v.asrRunning': '正在听写……', 'v.asrDone': '听写完成，请逐字核对',
+    'v.asrOff': '没有配置听写功能，请手动输入',
+    'v.create': '创建音色', 'v.save': '保存', 'v.delete': '删除音色', 'v.defaultName': '{voice}·{title}',
+
+    'x.title': '导出成片', 'x.sum': '共 {n} 段，{done} 段已生成 · 成片约 {len}',
+    'x.skip': ' · 没生成的 {k} 段会被跳过', 'x.note': ' · 语速、去气口和段间隔按当前设置',
+    'x.wav': '整篇一个文件，适合剪辑', 'x.mp3': '整篇一个文件，适合发给别人试听', 'x.zip': '每段一个 WAV，方便在剪辑软件里逐段对齐',
+    'x.go': '导出', 'x.running': '正在导出……', 'x.done': '已导出：',
+
+    'err.file_too_large': '文件太大（上限 60MB）', 'err.bad_request': '请求格式不对', 'err.not_found': '找不到',
+    'err.not_allowed': '不支持这个操作', 'err.empty_file': '文件是空的', 'err.bad_audio': '读不了这个音频文件',
+    'err.need_name': '请填写音色名称', 'err.need_ref_text': '请填写参考文本', 'err.no_reference': '缺少参考录音',
+    'err.upload_missing': '上传的音频已过期，请重新上传', 'err.script_missing': '稿件不存在', 'err.take_missing': '这个版本不存在',
+    'err.voice_missing': '这个音色已被删除', 'err.empty_paragraph': '没有可生成的段落（段落是空的）',
+    'err.nothing_to_export': '还没有录好的段落', 'err.no_audio': '没有生成出声音，换个温度再试',
+    'err.generate_failed': '模型出错了，详情见服务日志', 'err.transcribe_unavailable': '没有配置听写功能',
+    'err.transcribe_failed': '听写失败', 'err.internal': '服务内部错误',
+  },
+
+  en: {
+    'h.g': 'generate',
+    'brand': 'Qwen3-TTS Console',
+    'model': '1.7B model · runs locally',
+    'led.preset': 'Preset', 'led.presetTip': 'Whether the model for system voices is loaded',
+    'led.clone': 'Clone', 'led.cloneTip': 'Whether the model for custom voices is loaded',
+    'led.rec': 'Busy',
+    'btn.scripts': 'Scripts', 'btn.new': 'New script',
+    'btn.recAll': 'Generate remaining', 'btn.recAllTip': 'Queue every paragraph that has no take yet (A)',
+    'btn.add': 'Add paragraph',
+
+    'lcd.noScript': 'No script open', 'lcd.renameTip': 'Click to rename',
+    'lcd.track': 'Para', 'lcd.done': 'Done', 'lcd.voice': 'Voice',
+    'mode.standby': 'Standby', 'mode.ready': 'Ready', 'mode.loading': 'Loading', 'mode.rec': 'Generating',
+    'mode.play': 'Play', 'mode.playall': 'Play all', 'mode.offline': 'Offline',
+
+    'lib.title': 'Voice library', 'lib.hint': 'Click a voice to use it',
+    'lib.system': 'System voices', 'lib.custom': 'My voices',
+    'lib.emptyCustom': 'No custom voices yet. Upload a recording, or click "Make voice" on a take.',
+    'lib.noMatch': 'No voices match these filters',
+    'f.lang': 'Language', 'f.gender': 'Gender', 'f.all': 'All', 'f.search': 'Search voices',
+    'vl.zh': 'Chinese', 'vl.en': 'English', 'vl.ja': 'Japanese', 'vl.ko': 'Korean', 'vl.other': 'Other', 'vl.dialect': 'Dialect',
+    'vs.zh': 'ZH', 'vs.en': 'EN', 'vs.ja': 'JA', 'vs.ko': 'KO', 'vs.other': 'Other',
+    'dialect.beijing': 'Beijing', 'dialect.sichuan': 'Sichuan',
+    'g.f': 'Female', 'g.m': 'Male', 'gs.f': 'F', 'gs.m': 'M',
+    'cart.add': 'New voice', 'cart.hear': 'Play reference', 'cart.edit': 'Edit voice',
+    'src.upload': 'Uploaded recording', 'src.take': 'From "{title}"',
+    'desc.Vivian': 'Bright, crisp young female', 'desc.Serena': 'Gentle young female', 'desc.Uncle_Fu': 'Deep, mellow mature male',
+    'desc.Dylan': 'Young male, Beijing accent', 'desc.Eric': 'Lively male, Sichuan dialect', 'desc.Ryan': 'Rhythmic, dynamic male',
+    'desc.Aiden': 'Sunny American male', 'desc.Ono_Anna': 'Playful Japanese female', 'desc.Sohee': 'Warm Korean female',
+
+    'gen.title': 'Generate', 'gen.note': 'Regenerate to apply',
+    'post.title': 'Post', 'post.note': 'Applies instantly, no regenerating',
+    'gen.lang': 'Language',
+    'gl.auto': 'Auto', 'gl.chinese': 'Chinese', 'gl.english': 'English', 'gl.japanese': 'Japanese', 'gl.korean': 'Korean',
+    'mood.label': 'Mood', 'mood.note': 'Describe the tone in one sentence',
+    'mood.cloneNote': 'Custom voices ignore mood; the tone comes from the reference recording', 'mood.ph': 'Normal tone',
+    'k.temp': 'Temp', 'k.tempSub': 'Stable ↔ varied',
+    'k.speed': 'Speed', 'k.speedSub': 'Faster or slower',
+    'k.gate': 'Breath', 'k.gateSub': 'Silence threshold',
+    'k.keep': 'Pause', 'k.keepSub': 'Kept after cleanup',
+    'k.gap': 'Gap', 'k.gapSub': 'Between paragraphs',
+    'k.off': 'Off', 'k.sec': '{v} s',
+
+    'trk.title': 'Paragraphs', 'trk.hint': 'Generate several takes; the selected one goes into the final mix',
+    'trk.ph': 'What this paragraph says…', 'trk.noTake': 'No take yet · click "Generate"',
+    'trk.rec': 'Generate', 'trk.recTip': 'Generate this paragraph (G). Existing takes are kept',
+    'trk.playTip': 'Play the selected take (Space)',
+    'trk.lock': 'Make voice', 'trk.lockTip': 'Turn the selected take into a custom voice and generate the rest with it, so the whole script sounds the same',
+    'trk.delTakeTip': 'Delete the selected take', 'trk.delParaTip': 'Delete this paragraph',
+    'trk.takes': '{n} takes', 'trk.takes1': '1 take', 'trk.textChanged': 'Text edited since this take',
+    'trk.running': 'Generating {p}%', 'trk.queued': 'Queued',
+    'trk.takeTip': '{voice} · temp {temp}{mood} · {dur} s',
+
+    't.rec': 'Generate', 't.recTip': 'Generate the current paragraph (G)', 't.play': 'Play', 't.playTip': 'Play or pause the current paragraph (Space)',
+    't.all': 'Play all', 't.allTip': 'Play everything from the current paragraph (Shift+Space)', 't.stop': 'Stop', 't.stopTip': 'Stop (Esc)',
+    't.export': 'Export', 't.exportTip': 'Export the final mix (B)',
+    'h.a': 'generate remaining', 'h.space': 'play', 'h.arrows': 'move', 'h.num': 'pick take', 'h.cmdEnter': 'generate while editing',
+    'empty.label': 'Blank script', 'empty.text': 'No scripts yet. Paste one in; blank lines split it into paragraphs.',
+    'colophon': 'Models unload after {m} idle minutes', 'home': 'Back to home',
+
+    'msg.open': 'Open or create a script to start',
+    'msg.loading.preset': 'Loading the preset model…', 'msg.loading.clone': 'Loading the clone model…',
+    'msg.recording': 'Generating paragraph {n} · {p}%', 'msg.recOther': 'Generating another script · {p}%', 'msg.queueRest': ' · {k} more queued',
+    'msg.playing': 'Playing paragraph {n}',
+    'msg.allDone': 'All {n} paragraphs generated · click "Export" for the final mix',
+    'msg.idle': 'Model ready · unloads after {m} idle minutes',
+    'msg.pending': '{n} paragraphs left · pick a voice and click "Generate"',
+    'msg.queuedMany': '{n} paragraphs queued · {voice}', 'msg.recStart': 'Generating paragraph {n} · {voice}', 'msg.firstLoad': ' · loading the model first',
+    'msg.emptyPara': 'This paragraph is empty', 'msg.allQueued': 'All pending paragraphs are already queued',
+    'msg.nothingPending': 'Every paragraph has a take; select one and press G to regenerate',
+    'msg.noTake': 'This paragraph has no take yet', 'msg.noTakesAll': 'Nothing generated yet', 'msg.pickPara': 'Select a paragraph first',
+    'msg.needScript': 'Open or create a script first',
+    'msg.voiceSet': 'Using {name}', 'msg.genFailed': 'Generation failed: {err}', 'msg.saveFailed': 'Not saved: {err}',
+    'msg.done': 'Finished', 'msg.newScript': 'Script created with {n} paragraphs · pick a voice, then press A',
+    'msg.locked': 'Voice "{name}" created · press A to generate the rest with it', 'msg.voiceAdded': 'Voice "{name}" added',
+    'msg.voiceSaved': 'Voice saved', 'msg.offline': 'Cannot reach the server',
+
+    'c.delVoice': 'Delete voice "{name}"? Existing takes are not affected.',
+    'c.delTake': 'Delete take {k} of paragraph {n}?', 'c.delPara': 'Delete paragraph {n} and its {k} takes?',
+    'c.delScript': 'Delete "{title}" and all its takes?',
+
+    'd.cancel': 'Cancel', 'd.close': 'Close', 'd.delete': 'Delete',
+    'new.title': 'New script', 'new.sub': 'Paste the script; blank lines split paragraphs (single lines if there are none). You can also drop a text file here.',
+    'new.titlePh': 'Title (optional, defaults to the first line)', 'new.textPh': 'Paste your script here…',
+    'new.count': '{n} paragraphs', 'new.create': 'Create',
+    'scripts.title': 'Scripts', 'scripts.empty': 'No scripts yet', 'scripts.meta': '{done}/{n} generated · {date}',
+
+    'v.newTitle': 'New voice', 'v.lockTitle': 'Make a voice from paragraph {n}', 'v.editTitle': 'Edit voice',
+    'v.sub': 'Best with 5–15 seconds of one speaker in a quiet room. The reference text must match the recording word for word; it matters most for likeness.',
+    'v.lockSub': 'Uses the current speed and breath settings. The reference text defaults to this paragraph; make sure it matches the take.',
+    'v.editSub': 'Change the name, tags or reference text. To use another recording, create a new voice.',
+    'v.drop': 'Click to choose an audio file, or drop one here', 'v.uploading': 'Uploading {name}…',
+    'v.uploaded': '{name} · {d} s · click to replace', 'v.tooLong': ' (long; trim to under 15 s)', 'v.tooShort': ' (short)',
+    'v.namePh': 'Voice name', 'v.unset': 'Gender not set', 'v.refText': 'Reference text', 'v.textPh': 'Exactly what the recording says',
+    'v.asr': 'Transcribe', 'v.asrRunning': 'Transcribing…', 'v.asrDone': 'Done; please check every word',
+    'v.asrOff': 'Transcription is not configured; please type it',
+    'v.create': 'Create voice', 'v.save': 'Save', 'v.delete': 'Delete voice', 'v.defaultName': '{voice} · {title}',
+
+    'x.title': 'Export', 'x.sum': '{done} of {n} paragraphs generated · about {len}',
+    'x.skip': ' · {k} without takes will be skipped', 'x.note': ' · uses the current speed, breath and gap settings',
+    'x.wav': 'One file, for editing', 'x.mp3': 'One file, for sharing', 'x.zip': 'One WAV per paragraph, for aligning in an editor',
+    'x.go': 'Export', 'x.running': 'Exporting…', 'x.done': 'Exported: ',
+
+    'err.file_too_large': 'File too large (60 MB max)', 'err.bad_request': 'Malformed request', 'err.not_found': 'Not found',
+    'err.not_allowed': 'Not supported', 'err.empty_file': 'The file is empty', 'err.bad_audio': 'Cannot read this audio file',
+    'err.need_name': 'Please enter a voice name', 'err.need_ref_text': 'Please enter the reference text', 'err.no_reference': 'Missing reference recording',
+    'err.upload_missing': 'The upload has expired; please upload again', 'err.script_missing': 'Script not found', 'err.take_missing': 'Take not found',
+    'err.voice_missing': 'This voice has been deleted', 'err.empty_paragraph': 'Nothing to generate (the paragraph is empty)',
+    'err.nothing_to_export': 'No generated paragraphs yet', 'err.no_audio': 'No audio came out; try another temperature',
+    'err.generate_failed': 'The model failed; see the server log', 'err.transcribe_unavailable': 'Transcription is not configured',
+    'err.transcribe_failed': 'Transcription failed', 'err.internal': 'Internal server error',
+  },
+};
+
+const MOODS = {
+  zh: [['新闻播报', '新闻播报快语速，清晰利落'], ['温柔亲切', '温柔亲切，娓娓道来'], ['兴奋', '兴奋激动，语速很快'],
+       ['沉稳', '沉稳有力，有说服力'], ['耳语', '低声耳语'], ['悲伤', '悲伤，语速缓慢']],
+  en: [['Newscast', 'Fast-paced news anchor, crisp and clear'], ['Warm', 'Warm and gentle, unhurried'],
+       ['Excited', 'Excited and energetic, speaking fast'], ['Confident', 'Calm, steady and persuasive'],
+       ['Whisper', 'Whispering quietly'], ['Sad', 'Sad, speaking slowly']],
+};
+
+let LANG = localStorage.getItem('tts.lang') || (navigator.language.startsWith('zh') ? 'zh' : 'en');
+
+function t(key, vars) {
+  let s = I18N[LANG][key] ?? I18N.zh[key] ?? key;
+  if (vars) s = s.replace(/\{(\w+)\}/g, (_, k) => vars[k] ?? '');
+  return s;
+}
+
+function applyI18n(root = document) {
+  document.documentElement.lang = LANG === 'zh' ? 'zh-CN' : 'en';
+  for (const el of root.querySelectorAll('[data-i18n]')) el.textContent = t(el.dataset.i18n);
+  for (const el of root.querySelectorAll('[data-i18n-title]')) el.title = t(el.dataset.i18nTitle);
+  for (const el of root.querySelectorAll('[data-i18n-ph]')) el.placeholder = t(el.dataset.i18nPh);
+  for (const b of document.querySelectorAll('[data-ui-lang]')) b.classList.toggle('on', b.dataset.uiLang === LANG);
+}
