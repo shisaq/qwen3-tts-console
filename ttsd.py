@@ -722,7 +722,10 @@ class Handler(BaseHTTPRequestHandler):
             if not p:
                 raise ApiError(404, "not_found")
             tid = parts[2].removesuffix(".wav")
-            return self.send_file(render_take(p["id"], tid, *post_params(q, p["settings"])), cache=True)
+            path = render_take(p["id"], tid, *post_params(q, p["settings"]))
+            # ?download=<name> saves the file instead of streaming it
+            name = os.path.basename(q.get("download") or "")
+            return self.send_file(path, download_name=name or None, cache=not name)
         if len(parts) == 2 and parts[0] == "voice" and safe_id(parts[1]):
             return self.send_file(os.path.join(vdir(parts[1]), "ref.wav"))
         if len(parts) == 2 and parts[0] == "upload" and safe_id(parts[1]):

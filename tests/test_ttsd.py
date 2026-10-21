@@ -10,6 +10,7 @@ import tempfile
 import threading
 import unittest
 import urllib.error
+import urllib.parse
 import urllib.request
 
 import numpy as np
@@ -126,6 +127,18 @@ class Api(unittest.TestCase):
         self.assertEqual((code, err["error"]), (400, "nothing_to_export"))
         self.assertEqual(self.call("DELETE", f"/api/projects/{p['id']}")[0], 200)
         self.assertEqual(self.call("GET", f"/api/projects/{p['id']}")[1]["error"], "script_missing")
+
+    def test_paragraph_download(self):
+        _, p = self.call("POST", "/api/projects", {"text": "One."})
+        tid = "c" * 10
+        os.makedirs(os.path.join(ttsd.pdir(p["id"]), "takes"), exist_ok=True)
+        sf.write(os.path.join(ttsd.pdir(p["id"]), "takes", f"{tid}.wav"), np.zeros(ttsd.SR), ttsd.SR)
+        url = f"{self.base}/media/take/{p['id']}/{tid}.wav?gate=off"
+        with urllib.request.urlopen(url) as r:
+            self.assertIsNone(r.headers.get("Content-Disposition"))
+        with urllib.request.urlopen(url + "&download=" + urllib.parse.quote("稿件-01.wav")) as r:
+            self.assertIn("attachment", r.headers["Content-Disposition"])
+            self.assertIn(urllib.parse.quote("稿件-01.wav"), r.headers["Content-Disposition"])
 
     def test_errors_are_codes(self):
         self.assertEqual(self.call("GET", "/api/nope")[1]["error"], "not_found")

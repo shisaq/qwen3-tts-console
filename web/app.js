@@ -351,6 +351,7 @@ function trackTemplate() {
       <div class="trk-btns">
         <button class="ibtn rec" data-act="rec" data-i18n-title="trk.recTip"><svg viewBox="0 0 24 24"><path d="M12 3.5 13.9 9l5.6 1.1-4.3 3.7 1.1 5.7L12 16.7l-4.3 2.8 1.1-5.7-4.3-3.7L10.1 9z"/></svg><span data-i18n="trk.rec"></span></button>
         <button class="ibtn" data-act="play" data-i18n-title="trk.playTip"><svg viewBox="0 0 24 24"><path d="M7 4.5v15l12.5-7.5z"/></svg></button>
+        <button class="ibtn" data-act="download" data-i18n-title="trk.dlTip"><svg viewBox="0 0 24 24"><path d="M11 3h2v10.2l3.6-3.6 1.4 1.4-6 6-6-6 1.4-1.4 3.6 3.6zM4 19h16v2H4z"/></svg></button>
         <button class="ibtn" data-act="lock" data-i18n-title="trk.lockTip"><svg viewBox="0 0 24 24"><path d="M7 10V7a5 5 0 0 1 10 0v3h1.5v11h-13V10zm2.5 0h5V7a2.5 2.5 0 0 0-5 0z"/></svg><span data-i18n="trk.lock"></span></button>
         <button class="ibtn danger" data-act="deltake" data-i18n-title="trk.delTakeTip"><svg viewBox="0 0 24 24"><path d="M9 3h6l1 2h4v2H4V5h4zm-3 6h12l-1 12H7z"/></svg></button>
         <button class="ibtn danger" data-act="delpara" data-i18n-title="trk.delParaTip"><svg viewBox="0 0 24 24"><path d="m6.4 5 5.6 5.6L17.6 5 19 6.4 13.4 12l5.6 5.6-1.4 1.4-5.6-5.6L6.4 19 5 17.6l5.6-5.6L5 6.4z"/></svg></button>
@@ -398,7 +399,7 @@ function updateTrack(el, para, i, job) {
       return `<button class="take${x.id === para.chosen ? ' on' : ''}" data-tid="${x.id}" title="${esc(tip)}">${n + 1}</button>`;
     }).join('');
   }
-  for (const a of ['lock', 'deltake', 'play']) $(`[data-act=${a}]`, el).disabled = !take;
+  for (const a of ['lock', 'deltake', 'play', 'download']) $(`[data-act=${a}]`, el).disabled = !take;
   const meta = $('.trk-meta', el);
   let html = '';
   if (job?.state === 'running') html = `<span class="tag warn">${esc(t('trk.running', { p: Math.round((job.progress || 0) * 100) }))}</span><span>${esc(voiceLabel(job.voice))}</span>`;
@@ -474,6 +475,7 @@ tracks.addEventListener('click', async e => {
   const n = pad2(paraIndex(para.id) + 1);
   if (act === 'rec') rec([para.id]);
   if (act === 'play') togglePlay(para.id);
+  if (act === 'download') downloadPara(para);
   if (act === 'lock') openVoiceDialog({ mode: 'lock', para });
   if (act === 'deltake') {
     const tk = chosenTake(para);
@@ -679,6 +681,16 @@ async function playPara(id, frac = 0, mode = 'one') {
     const next = nextChosen(id);
     if (next) audio.load(takeUrl(next)).catch(() => {});
   }
+}
+// One paragraph as a file, processed with the current speed / breath settings.
+function downloadPara(para) {
+  if (!chosenTake(para)) return lcd.flash(t('msg.noTake'), true);
+  const base = S.project.title.replace(/[\\/:*?"<>|\s]+/g, '_').replace(/^_+|_+$/g, '').slice(0, 40) || 'tts';
+  const name = `${base}-${pad2(paraIndex(para.id) + 1)}.wav`;
+  const a = document.createElement('a');
+  a.href = takeUrl(para) + '&download=' + encodeURIComponent(name);
+  a.download = name;
+  document.body.appendChild(a); a.click(); a.remove();
 }
 function nextChosen(id) {
   const ps = S.project.paragraphs;

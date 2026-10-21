@@ -17,7 +17,7 @@ A local text-to-speech studio for Apple Silicon Macs, built around [Qwen3-TTS](h
 - **Voice library.** The 9 built-in voices (Chinese, English, Japanese, Korean, Beijing and Sichuan dialects) plus your own cloned voices, filterable by language and gender.
 - **Zero-shot voice cloning.** Upload 5–15 seconds of someone speaking plus the exact transcript, and save it as a named voice. No training. Optional automatic transcription with faster-whisper.
 - **Post-processing that never needs regenerating.** Speed (pitch-preserving), breath and pause removal and the gap between paragraphs are rendered with ffmpeg at playback and export time, so turning a knob is instant.
-- **Export** as one WAV, one MP3, or a ZIP with one WAV per paragraph for lining up in a video editor.
+- **Export** as one WAV, one MP3, or a ZIP with one WAV per paragraph for lining up in a video editor. Any single paragraph can also be downloaded on its own.
 - **Runs entirely on your Mac.** One generation at a time on the GPU; models load on demand and unload after 10 idle minutes.
 - Chinese and English UI, light and dark mode, keyboard shortcuts, works on a phone.
 
