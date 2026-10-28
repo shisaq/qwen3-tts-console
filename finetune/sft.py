@@ -101,6 +101,8 @@ def main():
     ap.add_argument("--spk_clips", type=int, default=64)
     ap.add_argument("--train_text_embedding", action="store_true",
                     help="also train the 311M-param text embedding (frozen by default: saves ~4 GB, few tokens are used)")
+    ap.add_argument("--freeze_layers", type=int, default=0,
+                    help="also freeze the first N of the talker's 28 layers (~50M params each) to save memory")
     ap.add_argument("--seed", type=int, default=1234)
     a = ap.parse_args()
     if not os.path.isdir(a.init_model_path):          # checkpoints copy files from a local folder
@@ -120,11 +122,13 @@ def main():
 
     model.speaker_encoder.eval()
     spk_emb = speaker_embedding(model, dataset, a.spk_clips, device)
-    frozen = ("speaker_encoder",) + (() if a.train_text_embedding else ("talker.model.text_embedding",))
+    frozen = ("speaker_encoder",) + (() if a.train_text_embedding else ("talker.model.text_embedding",)) \
+        + tuple(f"talker.model.layers.{i}." for i in range(a.freeze_layers))
     for n, p in model.named_parameters():
         p.requires_grad_(not n.startswith(frozen))
     params = [p for p in model.parameters() if p.requires_grad]
-    print(f"training {sum(p.numel() for p in params) / 1e6:.0f}M params (frozen: {', '.join(frozen)})", flush=True)
+    shown = frozen[:2] + ((f"talker layers 0-{a.freeze_layers - 1}",) if a.freeze_layers else ())
+    print(f"training {sum(p.numel() for p in params) / 1e6:.0f}M params (frozen: {', '.join(shown)})", flush=True)
     opt = torch.optim.AdamW(params, lr=a.lr, weight_decay=0.01)
     total = math.ceil(len(loader) / a.grad_accum) * a.epochs
     warm = max(1, int(total * a.warmup_ratio))

@@ -37,6 +37,20 @@ by epoch 10; the best-sounding checkpoints were epochs 6–10, chosen by ear.
 
 The fine-tuned voice does **not** follow mood/style instructions: the Base model was never trained on them.
 
+### Less memory
+
+Peak memory is mostly weights, gradients and optimizer state of the trained parameters, so the way down is to
+train fewer of them. Same 18 minutes of data, 10 epochs, measured on the 64 GB machine:
+
+| `sft.py` options | trained params | peak memory | time | similarity (epochs 6 / 8 / 10) |
+|---|---|---|---|---|
+| defaults (`--batch_size 2`) | 1.6 B | ~39 GB | 17 min | 0.842 / 0.839 / 0.821 |
+| `--batch_size 1 --grad_accum 8 --freeze_layers 14` | 0.9 B | 26.8 GB | 14 min | 0.827 / 0.826 / 0.832 |
+| `--batch_size 1 --grad_accum 8 --freeze_layers 20` | 0.6 B | 22.8 GB | 12 min | 0.819 / 0.817 / 0.827 |
+
+All three are well above the zero-shot clone (0.718). Not tested on smaller Macs: subtract the peak from your RAM
+and keep several GB for macOS; if the system starts swapping, training slows down by an order of magnitude.
+
 ## Setup
 
 ```bash
