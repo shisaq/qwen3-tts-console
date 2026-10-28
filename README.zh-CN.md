@@ -60,6 +60,7 @@ python3 -m venv .venv
 | `idle_unload_minutes` | `10` | 闲置多少分钟后卸载模型 |
 | `device_name` | 空 | 显示在铭牌上 |
 | `home_url` | 空 | 在顶栏加一个「返回首页」链接 |
+| `tuned_voices` | `{}` | 微调过的单人模型（转成 MLX 的 `custom_voice` 检查点），例如 `{"me": {"name": "我", "model": "tuned/me-8bit", "speaker": "me", "gender": "m", "lang": "zh"}}`。`model` 相对于 `models_dir`；`speaker` 是检查点 `spk_id` 里的名字。显示在「我的音色」里，生成时语言固定为 auto，不支持语气描述 |
 
 ## 使用方法
 

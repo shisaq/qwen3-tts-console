@@ -56,6 +56,23 @@ class TextAndSettings(unittest.TestCase):
         self.assertFalse(ttsd.valid_voice("custom:../../etc"))
         self.assertFalse(ttsd.valid_voice(None))
 
+    def test_tuned_voice_needs_model_folder(self):
+        os.makedirs(os.path.join(ttsd.CFG["models_dir"], "tuned", "me-8bit"), exist_ok=True)
+        with open(os.path.join(ttsd.CFG["models_dir"], "tuned", "me-8bit", "config.json"), "w") as f:
+            f.write("{}")
+        tuned = {"myvoice": {"name": "Me", "model": "tuned/me-8bit", "speaker": "myvoice", "gender": "m", "lang": "zh"},
+                 "gone": {"name": "Gone", "model": "tuned/missing", "speaker": "gone"}}
+        old, ttsd.CFG["tuned_voices"] = ttsd.CFG["tuned_voices"], tuned
+        try:
+            self.assertTrue(ttsd.valid_voice("tuned:myvoice"))
+            self.assertFalse(ttsd.valid_voice("tuned:gone"))
+            self.assertFalse(ttsd.valid_voice("tuned:../x"))
+            self.assertEqual(ttsd.voice_name("tuned:myvoice"), "Me")
+            ids = [v["id"] for v in ttsd.list_voices() if v["kind"] == "tuned"]
+            self.assertEqual(ids, ["tuned:myvoice"])
+        finally:
+            ttsd.CFG["tuned_voices"] = old
+
     def test_post_params(self):
         self.assertEqual(ttsd.post_params({"gate": "off"}, ttsd.DEFAULT_SETTINGS), (1.0, None, 0.05))
         self.assertEqual(ttsd.post_params({"speed": "1.2", "gate": "-35", "keep": "0.2"}, {}), (1.2, -35.0, 0.2))

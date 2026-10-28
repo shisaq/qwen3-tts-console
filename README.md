@@ -60,6 +60,7 @@ Settings are read from `~/.config/ttsd/config.json` (or the file named by `TTSD_
 | `idle_unload_minutes` | `10` | Unload models after this much idle time |
 | `device_name` | empty | Shown on the nameplate |
 | `home_url` | empty | Adds a "Back to home" link to the top bar |
+| `tuned_voices` | `{}` | Fine-tuned single-speaker models (`custom_voice` checkpoints converted to MLX), e.g. `{"me": {"name": "Me", "model": "tuned/me-8bit", "speaker": "me", "gender": "m", "lang": "zh"}}`. `model` is relative to `models_dir`; `speaker` is the name in the checkpoint's `spk_id`. They show up under "My voices", generate with language "auto" and ignore mood |
 
 ## Using it
 

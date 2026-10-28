@@ -55,6 +55,8 @@ const chosenTake = para => para.takes.find(x => x.id === para.chosen) || null;
 const paraIndex = id => S.project ? S.project.paragraphs.findIndex(p => p.id === id) : -1;
 const voiceById = id => S.voices.find(v => v.id === id);
 const voiceLabel = id => voiceById(id)?.name.replace(/_/g, ' ') || '—';
+// library tab of a voice id: fine-tuned voices sit with the user's own voices
+const tabOf = id => id.startsWith('system:') ? 'system' : 'custom';
 function totalLength() {
   if (!S.project) return 0;
   const st = S.project.settings, speed = st.speed || 1;
@@ -228,14 +230,14 @@ $('#mood-chips').addEventListener('click', e => {
   $('#mood').value = v; setSetting('instruct', v); renderMood();
 });
 $('#mood').addEventListener('input', e => { setSetting('instruct', e.target.value); renderMood(); });
-const isCustom = () => settings().voice.startsWith('custom:');
+const isCustom = () => tabOf(settings().voice) === 'custom';     // no mood: cloned and fine-tuned voices
 function renderMood() {
   const st = settings(), custom = isCustom();
   const input = $('#mood');
   if (document.activeElement !== input) input.value = st.instruct || '';
   input.disabled = custom;
   $('#dymo').classList.toggle('disabled', custom);
-  $('#mood-note').textContent = t(custom ? 'mood.cloneNote' : 'mood.note');
+  $('#mood-note').textContent = t(!custom ? 'mood.note' : st.voice.startsWith('tuned:') ? 'mood.tunedNote' : 'mood.cloneNote');
   for (const b of $$('#mood-chips button')) { b.classList.toggle('on', st.instruct === b.dataset.v); b.disabled = custom; }
   const btns = $$('#lang button');
   btns.forEach((b, i) => { const on = b.dataset.v === (st.lang || 'auto'); b.classList.toggle('on', on); if (on) $('#lang').style.setProperty('--i', i); });
@@ -256,11 +258,12 @@ function voiceTags(v) {
 }
 function voiceDesc(v) {
   if (v.kind === 'system') return t('desc.' + v.name);
+  if (v.kind === 'tuned') return t('src.tuned');
   return v.source === 'take' ? t('src.take', { title: v.source_title }) : t('src.upload');
 }
 function matches(v) {
   const f = S.lib;
-  if (v.kind !== f.tab) return false;
+  if (tabOf(v.id) !== f.tab) return false;
   if (f.gender && v.gender !== f.gender) return false;
   if (f.lang === 'dialect' ? !v.dialect : f.lang && !v.langs.includes(f.lang)) return false;
   if (f.q) {
@@ -279,10 +282,10 @@ function renderLibrary() {
     if (tk) spinning.add(tk.voice);
   }
   $('#count-system').textContent = S.voices.filter(v => v.kind === 'system').length;
-  $('#count-custom').textContent = S.voices.filter(v => v.kind === 'custom').length;
+  $('#count-custom').textContent = S.voices.filter(v => tabOf(v.id) === 'custom').length;
   for (const b of $$('.lib-tabs button')) {
     b.classList.toggle('on', b.dataset.tab === S.lib.tab);
-    b.classList.toggle('has-sel', !!cur && cur.startsWith(b.dataset.tab + ':'));
+    b.classList.toggle('has-sel', !!cur && tabOf(cur) === b.dataset.tab);
   }
   for (const b of $$('#f-lang button')) b.classList.toggle('on', b.dataset.v === S.lib.lang);
   for (const b of $$('#f-gender button')) b.classList.toggle('on', b.dataset.v === S.lib.gender);
@@ -300,7 +303,7 @@ function renderLibrary() {
   if (!list.length) {
     const p = document.createElement('p');
     p.className = 'shelf-empty';
-    p.textContent = S.lib.tab === 'custom' && !S.voices.some(v => v.kind === 'custom') ? t('lib.emptyCustom') : t('lib.noMatch');
+    p.textContent = S.lib.tab === 'custom' && !S.voices.some(v => tabOf(v.id) === 'custom') ? t('lib.emptyCustom') : t('lib.noMatch');
     shelf.prepend(p);
   }
 }
@@ -330,7 +333,7 @@ $('#shelf').addEventListener('click', e => {
 });
 function showVoiceTab() {
   const v = settings()?.voice;
-  if (v) S.lib.tab = v.startsWith('custom:') ? 'custom' : 'system';
+  if (v) S.lib.tab = tabOf(v);
 }
 
 /* ───────── paragraphs ───────── */

@@ -57,6 +57,9 @@ def load_config():
         "idle_unload_minutes": 10,
         "device_name": "",                      # shown on the nameplate, e.g. the host name
         "home_url": "",                         # optional "back" link in the footer
+        # fine-tuned single-speaker models (custom_voice checkpoints), keyed by voice id:
+        # {"myvoice": {"name": "…", "model": "tuned/myvoice-8bit", "speaker": "myvoice", "gender": "m", "lang": "zh"}}
+        "tuned_voices": {},
     }
     if os.path.exists(path):
         with open(path, encoding="utf-8") as f:
@@ -174,8 +177,22 @@ def custom_meta(vid):
     return read_json(os.path.join(vdir(vid), "meta.json")) if safe_id(vid) else None
 
 
+def tuned_voice(key):
+    """Config entry of a fine-tuned voice whose model folder exists, else None.
+    The key is only looked up in the config (never used in a path), so it needn't be a hex id."""
+    t = CFG["tuned_voices"].get(key) if isinstance(key, str) else None
+    if t and os.path.isfile(os.path.join(CFG["models_dir"], t["model"], "config.json")):
+        return t
+    return None
+
+
 def list_voices():
     out = [{"id": f"system:{v['name']}", "kind": "system", **v} for v in SYSTEM_VOICES]
+    for key in CFG["tuned_voices"]:
+        t = tuned_voice(key)
+        if t:
+            out.append({"id": f"tuned:{key}", "kind": "tuned", "name": t["name"], "gender": t.get("gender", ""),
+                        "langs": [t.get("lang") or "zh"], "dialect": None, "color": t.get("color", "#6b4fa0")})
     root = os.path.join(DATA, "voices")
     metas = [custom_meta(vid) for vid in (os.listdir(root) if os.path.isdir(root) else [])]
     for m in sorted(filter(None, metas), key=lambda m: m["created"]):
@@ -192,6 +209,8 @@ def valid_voice(v):
     kind, name = v.split(":", 1)
     if kind == "system":
         return name in SYSTEM_NAMES
+    if kind == "tuned":
+        return tuned_voice(name) is not None
     return kind == "custom" and custom_meta(name) is not None
 
 
@@ -199,6 +218,8 @@ def voice_name(v):
     kind, name = v.split(":", 1)
     if kind == "system":
         return name
+    if kind == "tuned":
+        return (CFG["tuned_voices"].get(name) or {}).get("name", "?")
     return (custom_meta(name) or {}).get("name", "?")
 
 
@@ -396,8 +417,9 @@ class Engine:
             if self.models and not active:
                 idle_in = max(0, int(IDLE_UNLOAD - (now() - self.last_used)))
             return {
-                "models": {"preset": "preset" in self.models, "clone": "clone" in self.models},
-                "loading": self.loading,
+                "models": {"preset": "preset" in self.models,
+                           "clone": any(k == "clone" or k.startswith("tuned:") for k in self.models)},
+                "loading": "clone" if (self.loading or "").startswith("tuned:") else self.loading,
                 "busy": bool(active),
                 "current": self.public(cur) if cur else None,
                 "jobs": sorted(active, key=lambda j: j["created"]),
@@ -455,7 +477,10 @@ class Engine:
         self.loading = kind
         t0 = now()
         try:
-            folder = CFG["preset_model"] if kind == "preset" else CFG["clone_model"]
+            if kind.startswith("tuned:"):
+                folder = tuned_voice(kind.split(":", 1)[1])["model"]
+            else:
+                folder = CFG["preset_model"] if kind == "preset" else CFG["clone_model"]
             m = load_model(os.path.join(CFG["models_dir"], folder))
         finally:
             self.loading = None
@@ -473,11 +498,11 @@ class Engine:
     def run(self, job):
         s = job["settings"]
         voice = s["voice"]
-        kind = "clone" if voice.startswith("custom:") else "preset"
+        kind = "clone" if voice.startswith("custom:") else voice if voice.startswith("tuned:") else "preset"
         job["started"] = now()
-        est = self.estimate_seconds(job["text"]) * self.cost[kind]
+        est = self.estimate_seconds(job["text"]) * self.cost.setdefault(kind, self.cost["clone"])
         if kind not in self.models:
-            est += self.load_cost[kind]
+            est += self.load_cost.setdefault(kind, self.load_cost["clone"])
         job["est"] = est
         p = None
         try:
@@ -490,6 +515,13 @@ class Engine:
                 if name not in SYSTEM_NAMES:
                     raise ApiError(400, "voice_missing")
                 kw.update(voice=name, instruct=(s.get("instruct") or "").strip() or None)
+            elif kind.startswith("tuned:"):
+                t = tuned_voice(voice.split(":", 1)[1])
+                if not t:
+                    raise ApiError(400, "voice_missing")
+                # trained with the no-language prefix; a language tag switches to one it never saw.
+                # The Base model never learned instructions, so mood is not passed either.
+                kw.update(voice=t["speaker"], lang_code="auto")
             else:
                 vid = voice.split(":", 1)[1]
                 meta = custom_meta(vid)

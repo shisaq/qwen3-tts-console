@@ -10,5 +10,9 @@
   "whisper_model": "base",
   "idle_unload_minutes": 10,
   "device_name": "",
-  "home_url": ""
+  "home_url": "",
+  "tuned_voices": {
+    "myvoice": {"name": "My voice (fine-tuned)", "model": "tuned/myvoice-8bit",
+                "speaker": "myvoice", "gender": "m", "lang": "zh"}
+  }
 }
