@@ -176,7 +176,7 @@ def main():
     root = os.path.commonpath([os.path.dirname(p) for p in sources])   # clip ids are relative to this
     for path, candidates in sources.items():
         wav16, wav = load16(path), librosa.load(path, sr=SR, mono=True)[0]
-        floor = np.percentile(frame_db(wav, SR), 10)
+        floor = max(np.percentile(frame_db(wav, SR), 10), -90.0)   # digital silence would make SNR meaningless
         src = os.path.relpath(path, root)
         sents = transcribe(models, os.path.join(work, "asr", src.replace(os.sep, "__") + ".json"), wav16)
         bounds = [(s["start"], s["end"]) for s in sents]
