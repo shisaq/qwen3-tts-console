@@ -1,0 +1,8 @@
+# data prep + scoring (prep_data.py, review.py, score_samples.py)
+torch
+torchaudio
+funasr>=1.4
+modelscope
+librosa
+soundfile
+numpy

@@ -1,0 +1,19 @@
+{
+  "work_dir": "~/Datasets/voiceprep",
+  "speakers": {
+    "alice": {
+      "ref_audio": "~/Datasets/raw/alice_ref.wav",
+      "ref_text": "The exact transcript of the reference clip, word for word.",
+      "inputs": ["~/Datasets/raw/alice", "~/Datasets/raw/interview_alice_bob.wav"]
+    },
+    "bob": {
+      "ref_audio": "~/Datasets/raw/bob_ref.wav",
+      "ref_text": "参考音频的逐字文稿。",
+      "inputs": ["~/Datasets/raw/bob", "~/Datasets/raw/interview_alice_bob.wav"]
+    }
+  },
+  "terms": {
+    "chat gpt": "ChatGPT",
+    "deep seek": "DeepSeek"
+  }
+}

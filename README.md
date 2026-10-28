@@ -79,6 +79,10 @@ Keyboard: <kbd>G</kbd> generate · <kbd>A</kbd> generate remaining · <kbd>Space
 - The tone of a cloned voice comes from the reference recording, so the mood field is disabled for custom voices.
 - This is zero-shot cloning. Qwen3-TTS also supports fine-tuning a dedicated voice, but the official recipe targets CUDA GPUs and is not part of this project.
 
+## Fine-tune your own voice
+
+Zero-shot cloning from a few seconds of audio often misses timbre and accent. [`finetune/`](finetune/README.md) turns recordings of one person into a fine-tuned voice on the same Mac (a Mac mini with 64 GB trained 18 minutes of speech in 17 minutes), with a review page for the transcripts and an A/B page for picking the epoch. Add the result under `tuned_voices` and it shows up in "My voices".
+
 ## Running in the background
 
 [`launchd/com.example.ttsd.plist`](launchd/com.example.ttsd.plist) starts the server at login on macOS. Replace the paths, copy it to `~/Library/LaunchAgents/` and run `launchctl bootstrap gui/$(id -u) ~/Library/LaunchAgents/com.example.ttsd.plist`.
@@ -106,5 +110,6 @@ The tests cover text splitting, settings validation, post-processing and the HTT
 - [Qwen3-TTS](https://github.com/QwenLM/Qwen3-TTS) by the Qwen team; MLX conversions by [mlx-community](https://huggingface.co/mlx-community)
 - [mlx-audio](https://github.com/Blaizzy/mlx-audio) for running Qwen3-TTS on MLX
 - [faster-whisper](https://github.com/SYSTRAN/faster-whisper) for the optional transcription
+- [FunASR](https://github.com/modelscope/FunASR) (Paraformer, CAM++) for preparing fine-tuning data; `finetune/qwen_dataset.py` is from Qwen3-TTS (Apache-2.0)
 
 The code in this repository is released under the [MIT License](LICENSE). The models are not included and come with their own licenses.

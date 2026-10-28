@@ -79,6 +79,10 @@ python3 -m venv .venv
 - 克隆音色的语气来自参考录音，所以自定义音色不能填写语气。
 - 这里用的是免训练克隆。Qwen3-TTS 也支持为单个音色做微调，但官方流程面向 CUDA 显卡，不在本项目范围内。
 
+## 微调自己的声音
+
+几秒参考音频的零样本复刻，音色和口音常常不够像。[`finetune/`](finetune/README.zh-CN.md) 能在同一台 Mac 上把一个人的录音训练成微调音色（64 GB 的 Mac mini 训练 18 分钟语音用了 17 分钟），带转写复核页和挑选版本的对比页。结果写进 `tuned_voices`，就会出现在「我的音色」里。
+
 ## 后台运行
 
 [`launchd/com.example.ttsd.plist`](launchd/com.example.ttsd.plist) 可以让服务在 macOS 登录时自动启动。把里面的路径改成你的，复制到 `~/Library/LaunchAgents/`，再运行 `launchctl bootstrap gui/$(id -u) ~/Library/LaunchAgents/com.example.ttsd.plist`。
@@ -106,5 +110,6 @@ python3 -m venv .venv
 - Qwen 团队的 [Qwen3-TTS](https://github.com/QwenLM/Qwen3-TTS)；MLX 版本由 [mlx-community](https://huggingface.co/mlx-community) 转换
 - [mlx-audio](https://github.com/Blaizzy/mlx-audio)，让 Qwen3-TTS 在 MLX 上运行
 - [faster-whisper](https://github.com/SYSTRAN/faster-whisper)，用于可选的自动听写
+- [FunASR](https://github.com/modelscope/FunASR)（Paraformer、CAM++），用于准备微调数据；`finetune/qwen_dataset.py` 来自 Qwen3-TTS（Apache-2.0）
 
 本仓库代码以 [MIT 许可证](LICENSE) 发布。模型不包含在仓库内，并各自遵循其许可证。

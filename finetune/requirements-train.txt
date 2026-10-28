@@ -1,0 +1,5 @@
+# encoding + training (build_train.py, sft.py)
+qwen-tts
+torch
+safetensors
+huggingface_hub
