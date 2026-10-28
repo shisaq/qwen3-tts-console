@@ -127,6 +127,10 @@ def main():
     for n, p in model.named_parameters():
         p.requires_grad_(not n.startswith(frozen))
     params = [p for p in model.parameters() if p.requires_grad]
+    # frozen weights are never updated, so they don't need fp32 (autocast computes in bf16 anyway)
+    for n, p in model.named_parameters():
+        if not p.requires_grad and not n.startswith("speaker_encoder"):
+            p.data = p.data.to(torch.bfloat16)
     shown = frozen[:2] + ((f"talker layers 0-{a.freeze_layers - 1}",) if a.freeze_layers else ())
     print(f"training {sum(p.numel() for p in params) / 1e6:.0f}M params (frozen: {', '.join(shown)})", flush=True)
     opt = torch.optim.AdamW(params, lr=a.lr, weight_decay=0.01)

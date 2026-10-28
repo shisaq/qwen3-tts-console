@@ -81,7 +81,7 @@ python3 -m venv .venv
 
 ## 微调自己的声音
 
-几秒参考音频的零样本复刻，音色和口音常常不够像。[`finetune/`](finetune/README.zh-CN.md) 能在同一台 Mac 上把一个人的录音训练成微调音色（64 GB 的 Mac mini 训练 18 分钟语音用了 17 分钟），带转写复核页和挑选版本的对比页。结果写进 `tuned_voices`，就会出现在「我的音色」里。
+几秒参考音频的零样本复刻，音色和口音常常不够像。[`finetune/`](finetune/README.zh-CN.md) 能在同一台 Mac 上把一个人的录音训练成微调音色（64 GB 的 Mac mini 训练 18 分钟语音用了 17 分钟；0.6B 模型冻结部分层，内存峰值不到 12 GB），带转写复核页和挑选版本的对比页。结果写进 `tuned_voices`，就会出现在「我的音色」里。
 
 ## 后台运行
 

@@ -39,17 +39,27 @@ The fine-tuned voice does **not** follow mood/style instructions: the Base model
 
 ### Less memory
 
-Peak memory is mostly weights, gradients and optimizer state of the trained parameters, so the way down is to
-train fewer of them. Same 18 minutes of data, 10 epochs, measured on the 64 GB machine:
+Peak memory is mostly weights, gradients and optimizer state of the trained parameters, so the way down is to train
+fewer of them (`--freeze_layers N` freezes the first N of the talker's 28 layers; frozen weights are kept in bf16) or
+to start from the 0.6B Base model. Same 18 minutes of data, 6 epochs, `--batch_size 1 --grad_accum 8` unless noted,
+measured on a 64 GB M5 Pro:
 
-| `sft.py` options | trained params | peak memory | time | similarity (epochs 6 / 8 / 10) |
-|---|---|---|---|---|
-| defaults (`--batch_size 2`) | 1.6 B | ~39 GB | 17 min | 0.842 / 0.839 / 0.821 |
-| `--batch_size 1 --grad_accum 8 --freeze_layers 14` | 0.9 B | 26.8 GB | 14 min | 0.827 / 0.826 / 0.832 |
-| `--batch_size 1 --grad_accum 8 --freeze_layers 20` | 0.6 B | 22.8 GB | 12 min | 0.819 / 0.817 / 0.827 |
+| model · `sft.py` options | peak memory | time | similarity |
+|---|---|---|---|
+| 1.7B · defaults (`--batch_size 2`; epoch 6 of the 10-epoch run) | ~39 GB | ~10 min | 0.842 |
+| 1.7B · `--freeze_layers 20` | 18.2 GB | 7 min | 0.804 |
+| 1.7B · `--freeze_layers 24` | 15.6 GB | 6 min | 0.785 |
+| 0.6B · all layers | 16.1 GB | 7 min | 0.808 |
+| 0.6B · `--freeze_layers 14` | 11.9 GB | 5 min | 0.827 |
+| 0.6B · `--freeze_layers 20` | 10.6 GB | 5 min | 0.829 |
+| zero-shot clone (1.7B, no training) | – | – | 0.718 |
 
-All three are well above the zero-shot clone (0.718). Not tested on smaller Macs: subtract the peak from your RAM
-and keep several GB for macOS; if the system starts swapping, training slows down by an order of magnitude.
+For the 0.6B rows add `--init_model_path Qwen/Qwen3-TTS-12Hz-0.6B-Base`. Similarity is CAM++ against the speaker's
+real clips, 5 unseen sentences × 2 seeds, so differences of ±0.02 are noise; the 0.6B results were not compared by ear.
+
+macOS only lets the GPU use part of the RAM (on this Mac `torch.mps.recommended_max_memory()` is 81 %). Assuming the
+same share elsewhere, which is optimistic: 32 GB → ~26 GB usable, 24 GB → ~19 GB, 16 GB → ~13 GB. Not tested on
+those machines, and smaller chips will be slower. Once the system swaps, training slows down by an order of magnitude.
 
 ## Setup
 

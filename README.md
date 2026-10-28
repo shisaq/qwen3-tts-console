@@ -81,7 +81,7 @@ Keyboard: <kbd>G</kbd> generate · <kbd>A</kbd> generate remaining · <kbd>Space
 
 ## Fine-tune your own voice
 
-Zero-shot cloning from a few seconds of audio often misses timbre and accent. [`finetune/`](finetune/README.md) turns recordings of one person into a fine-tuned voice on the same Mac (a Mac mini with 64 GB trained 18 minutes of speech in 17 minutes), with a review page for the transcripts and an A/B page for picking the epoch. Add the result under `tuned_voices` and it shows up in "My voices".
+Zero-shot cloning from a few seconds of audio often misses timbre and accent. [`finetune/`](finetune/README.md) turns recordings of one person into a fine-tuned voice on the same Mac (a Mac mini with 64 GB trained 18 minutes of speech in 17 minutes; the 0.6B model with frozen layers peaks under 12 GB), with a review page for the transcripts and an A/B page for picking the epoch. Add the result under `tuned_voices` and it shows up in "My voices".
 
 ## Running in the background
 
