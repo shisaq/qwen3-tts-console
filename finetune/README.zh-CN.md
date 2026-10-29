@@ -59,7 +59,7 @@ uv venv --python 3.12 .venv-train && VIRTUAL_ENV=.venv-train uv pip install -r r
 cp voiceprep.example.json voiceprep.json     # 然后编辑
 ```
 
-`voiceprep.json`（已加入 .gitignore）里列出每个说话人：一段干净的参考音频和它的逐字文稿，以及要挖素材的文件或文件夹。两个人都出现的录音（比如访谈）可以同时列在两人名下，每个片段会分给听起来像的那个人。说话人的 key 必须是英文字母，它会成为模型里的 speaker id。`terms` 用来纠正识别经常写错的词（产品名、英文术语）。
+`voiceprep.json`（已加入 .gitignore）里列出每个说话人：一段干净的参考音频和它的逐字文稿，以及要挖素材的文件或文件夹。两个人都出现的录音（比如访谈）可以同时列在两人名下，每个片段会分给听起来像的那个人。说话人的 key 必须是英文字母，它会成为模型里的 speaker id。`terms` 用来纠正识别经常写错的词（产品名、英文术语）。素材可以直接放音频或视频（wav、flac、mp3、m4a、mp4、mov 等）；wav/flac/ogg 以外的格式用 `ffmpeg` 解码，需要先装好 ffmpeg。
 
 测试版本：funasr 1.4.16、modelscope 1.40.2、qwen-tts 0.1.1、torch 2.14.1，mlx-audio 见 `../requirements.txt`。
 

@@ -73,7 +73,8 @@ cp voiceprep.example.json voiceprep.json     # then edit it
 `voiceprep.json` (git-ignored) lists each speaker: a short clean reference clip with its exact transcript, and the
 files or folders to mine. A recording with two of your speakers (an interview) can be listed under both; each clip
 goes to whoever it sounds like. Speaker keys must be ASCII — they become the speaker id inside the model.
-`terms` fixes words the recogniser gets wrong (product names, English terms).
+`terms` fixes words the recogniser gets wrong (product names, English terms). Inputs can be audio or video files
+(wav, flac, mp3, m4a, mp4, mov …); anything that isn't wav/flac/ogg is decoded with `ffmpeg`, so have it on your PATH.
 
 Tested with funasr 1.4.16, modelscope 1.40.2, qwen-tts 0.1.1, torch 2.14.1, mlx-audio as pinned in `../requirements.txt`.
 

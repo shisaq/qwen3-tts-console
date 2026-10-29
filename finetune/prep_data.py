@@ -16,6 +16,8 @@ import glob
 import json
 import os
 import re
+import shutil
+import subprocess
 from difflib import SequenceMatcher
 
 import librosa
@@ -38,6 +40,17 @@ TERMS = {
     "ai": "AI", "gpt": "GPT", "api": "API", "cpu": "CPU", "gpu": "GPU", "ok": "OK", "app": "App",
     "agent": "Agent", "agents": "Agents", "open ai": "OpenAI", "iphone": "iPhone", "mac": "Mac",
 }
+
+
+def load_audio(path, sr):
+    """Mono float32 at `sr`. wav/flac/ogg go through libsndfile; anything else (mp4, mov, m4a, aac, mp3)
+    is decoded by ffmpeg, which libsndfile/librosa can't read on their own."""
+    if path.lower().endswith((".wav", ".flac", ".ogg")):
+        return librosa.load(path, sr=sr, mono=True)[0]
+    ffmpeg = shutil.which("ffmpeg") or "/opt/homebrew/bin/ffmpeg"
+    out = subprocess.run([ffmpeg, "-v", "error", "-i", path, "-vn", "-ac", "1", "-ar", str(sr), "-f", "f32le", "-"],
+                         capture_output=True, check=True).stdout
+    return np.frombuffer(out, dtype=np.float32).copy()
 
 
 def db(x):
@@ -168,14 +181,14 @@ def main():
     work, speakers = cfg["work_dir"], cfg["speakers"]
     fix_terms = term_fixer(cfg["terms"])
     models = Models()
-    load16 = lambda p: librosa.load(p, sr=16000, mono=True)[0]
+    load16 = lambda p: load_audio(p, 16000)
     refs = {name: models.embed(load16(s["ref_audio"])) for name, s in speakers.items()}
 
     out = {name: [] for name in speakers}
     sources = list_sources(cfg)
     root = os.path.commonpath([os.path.dirname(p) for p in sources])   # clip ids are relative to this
     for path, candidates in sources.items():
-        wav16, wav = load16(path), librosa.load(path, sr=SR, mono=True)[0]
+        wav16, wav = load16(path), load_audio(path, SR)
         floor = max(np.percentile(frame_db(wav, SR), 10), -90.0)   # digital silence would make SNR meaningless
         src = os.path.relpath(path, root)
         sents = transcribe(models, os.path.join(work, "asr", src.replace(os.sep, "__") + ".json"), wav16)
