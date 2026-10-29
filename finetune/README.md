@@ -80,6 +80,23 @@ Tested with funasr 1.4.16, modelscope 1.40.2, qwen-tts 0.1.1, torch 2.14.1, mlx-
 
 ## Run
 
+The short way, one command per step:
+
+```bash
+./run.sh prep                       # clips for every speaker, then opens the review page (http://127.0.0.1:18410)
+./run.sh train alice                # encode → train 10 epochs → samples → scores
+                                    #   less memory: ./run.sh train alice --epochs 6 --batch_size 1 --grad_accum 8 --freeze_layers 20
+./run.sh review                     # listen at /compare/alice and pick an epoch
+./run.sh deploy alice 8 --name "Alice" --gender f --restart <your ttsd launchd label>
+```
+
+`deploy` copies the MLX 8-bit model into the console's `models_dir/tuned/`, adds `tuned_voices.alice` to the console
+config (`$TTSD_CONFIG` or `~/.config/ttsd/config.json`, backed up first, other keys untouched) and restarts ttsd.
+`run.sh` expects `.venv`, `.venv-train` here and the console's `../.venv`; set `PREP`, `TRAIN`, `MLX` to other
+interpreters if yours live elsewhere, and `CONFIG` for another config file.
+
+The same steps by hand:
+
 ```bash
 .venv/bin/python prep_data.py                                   # all speakers
 .venv/bin/python review.py                                      # http://127.0.0.1:18410  (no auth: keep it local)

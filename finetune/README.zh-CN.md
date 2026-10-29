@@ -65,6 +65,20 @@ cp voiceprep.example.json voiceprep.json     # 然后编辑
 
 ## 运行
 
+最短路径，每一步一条命令：
+
+```bash
+./run.sh prep                       # 所有说话人切片段，完成后打开复核页（http://127.0.0.1:18410）
+./run.sh train alice                # 编码 → 训练 10 轮 → 生成样音 → 打分
+                                    #   省内存：./run.sh train alice --epochs 6 --batch_size 1 --grad_accum 8 --freeze_layers 20
+./run.sh review                     # 在 /compare/alice 对比试听，挑一轮
+./run.sh deploy alice 8 --name "Alice" --gender f --restart <你的 ttsd launchd label>
+```
+
+`deploy` 会把 MLX 8bit 模型复制到控制台的 `models_dir/tuned/`，在控制台配置（`$TTSD_CONFIG` 或 `~/.config/ttsd/config.json`，先备份，其他内容不动）里加上 `tuned_voices.alice`，再重启 ttsd。`run.sh` 默认用本目录的 `.venv`、`.venv-train` 和控制台的 `../.venv`；虚拟环境在别处的话，用 `PREP`、`TRAIN`、`MLX` 指定解释器，`CONFIG` 指定其他配置文件。
+
+也可以一步步手动跑：
+
 ```bash
 .venv/bin/python prep_data.py                                   # 所有说话人
 .venv/bin/python review.py                                      # http://127.0.0.1:18410 （无登录，只在本机开）
